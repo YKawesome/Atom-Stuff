@@ -74,11 +74,11 @@ linklist = formatter(linklist)
 wb = Workbook()
 cSheet = wb.add_sheet('Crypto Data')
 
-def writeToExcelFile(number, datep, timep, greencurrency, greenunits, redcurrency, redunits, othercur, otherunits):
-    datalist = [datep, timep, greencurrency, greenunits, redcurrency, redunits, othercur, otherunits]
+def writeToExcelFile(number, datep, timep, greencurrency, redcurrency, othercur):
+    datalist = [datep, timep, greencurrency, redcurrency, othercur]
     for index, item in enumerate(datalist):
         cSheet.write(number, index, item)
-writeToExcelFile(0, 'Date', 'Time Stamp', 'Green Units', 'Green Currency', 'Red Units', 'Red Currency', 'Other Units', 'Other Currency')
+writeToExcelFile(0, 'Date', 'Time Stamp', 'Green Units', 'Red Units', 'Balance')
 
 linklist.reverse()
 for index, [timestamp,gred,movr] in enumerate(linklist):
@@ -96,7 +96,7 @@ for index, [timestamp,gred,movr] in enumerate(linklist):
         redcurrencyv=None
     othercurv = movr.split()[0]
     otherunitsv = movr.split()[1]
-    writeToExcelFile(index+1, dateg, timeg, greencurrencyv, greenunitsv, redcurrencyv, redunitsv, othercurv, otherunitsv)
+    writeToExcelFile(index+1, dateg, timeg, greencurrencyv, redunitsv, othercurv)
 
 
 wb.save('cryptoscrapingtwo.xlsx')

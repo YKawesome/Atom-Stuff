@@ -1,0 +1,107 @@
+import urllib.request, urllib.parse, urllib.error
+import ssl
+import csv
+def merge(list1, list2, list3, list4, list5, list6, list7):
+    merged_list = [(list1[i], list2[i], list3[i], list4[i], list5[i], list6[i], list7[i]) for i in range(0, len(list1))]
+    return merged_list
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+splitteruno = "<span data-rating=\"1\" class=\"rating lit rating-first icon-b-2\" aria-hidden=\"true\">\n        <span class=\"etsy-icon stars-svg-star\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewBox=\"3 3 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19.985,10.36a0.5,0.5,0,0,0-.477-0.352H14.157L12.488,4.366a0.5,0.5,0,0,0-.962,0l-1.67,5.642H4.5a0.5,0.5,0,0,0-.279.911L8.53,13.991l-1.5,5.328a0.5,0.5,0,0,0,.741.6l4.231-2.935,4.215,2.935a0.5,0.5,0,0,0,.743-0.6l-1.484-5.328,4.306-3.074A0.5,0.5,0,0,0,19.985,10.36Z\"\/><\/svg><\/span>\n        <span data-rating=\"2\" class=\"rating lit\">\n                <span class=\"etsy-icon stars-svg-star\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewBox=\"3 3 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19.985,10.36a0.5,0.5,0,0,0-.477-0.352H14.157L12.488,4.366a0.5,0.5,0,0,0-.962,0l-1.67,5.642H4.5a0.5,0.5,0,0,0-.279.911L8.53,13.991l-1.5,5.328a0.5,0.5,0,0,0,.741.6l4.231-2.935,4.215,2.935a0.5,0.5,0,0,0,.743-0.6l-1.484-5.328,4.306-3.074A0.5,0.5,0,0,0,19.985,10.36Z\"\/><\/svg><\/span>\n            <span data-rating=\"3\" class=\"rating lit\">\n                    <span class=\"etsy-icon stars-svg-star\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewBox=\"3 3 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19.985,10.36a0.5,0.5,0,0,0-.477-0.352H14.157L12.488,4.366a0.5,0.5,0,0,0-.962,0l-1.67,5.642H4.5a0.5,0.5,0,0,0-.279.911L8.53,13.991l-1.5,5.328a0.5,0.5,0,0,0,.741.6l4.231-2.935,4.215,2.935a0.5,0.5,0,0,0,.743-0.6l-1.484-5.328,4.306-3.074A0.5,0.5,0,0,0,19.985,10.36Z\"\/><\/svg><\/span>\n                <span data-rating=\"4\" class=\"rating lit\">\n                        <span class=\"etsy-icon stars-svg-star\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewBox=\"3 3 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19.985,10.36a0.5,0.5,0,0,0-.477-0.352H14.157L12.488,4.366a0.5,0.5,0,0,0-.962,0l-1.67,5.642H4.5a0.5,0.5,0,0,0-.279.911L8.53,13.991l-1.5,5.328a0.5,0.5,0,0,0,.741.6l4.231-2.935,4.215,2.935a0.5,0.5,0,0,0,.743-0.6l-1.484-5.328,4.306-3.074A0.5,0.5,0,0,0,19.985,10.36Z\"\/><\/svg><\/span>\n                    <span data-rating=\"5\" class=\"rating lit\">\n                            <span class=\"etsy-icon stars-svg-star\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewBox=\"3 3 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M19.985,10.36a0.5,0.5,0,0,0-.477-0.352H14.157L12.488,4.366a0.5,0.5,0,0,0-.962,0l-1.67,5.642H4.5a0.5,0.5,0,0,0-.279.911L8.53,13.991l-1.5,5.328a0.5,0.5,0,0,0,.741.6l4.231-2.935,4.215,2.935a0.5,0.5,0,0,0,.743-0.6l-1.484-5.328,4.306-3.074A0.5,0.5,0,0,0,19.985,10.36Z\"\/><\/svg><\/span>\n                    <\/span>\n                <\/span>\n            <\/span>\n        <\/span>\n    <\/span>\n<\/span><\/div>\n\n\n                <div data-region=\"review-actions\" class=\"review-actions clearfix\">\n\n\n\n\n\n                <\/div>\n\n\n                <div data-region=\"response\">\n                <\/div>\n\n                <div data-region=\"listing\">\n                    <div class=\"mt-xs-3 clearfix\">\n"
+
+url = input("Enter - ")
+html = urllib.request.urlopen(url, context=ctx).read().decode()
+print(html.split(splitteruno))
+# #reviews
+# reviews = list()
+# myps = html.findAll("p", {"class": "prose break-word m-xs-0"})
+# for tag in myps:
+#     reviews.append(str(tag.string))
+#
+# print(reviews)
+
+# #stars
+# stars = list()
+# starsdiv = html.findAll("div", {"class": "mb-xs-0 p-xs-0"})
+# poo = list()
+# poop = list()
+# for tag in starsdiv:
+#     poo.append(tag.findAll("span", {"class": "stars-svg"}))
+# for tal in poo:
+#     for something in tal:
+#         poop.append(something.findAll("input", {"name": "rating"}))
+# for thingie in poop:
+#     for thing in thingie:
+#         stars.append(thing.get("value", None))
+# #Ppl wearing the product
+# mypoos = html.findAll("ul", {"class": "reviews-list"})
+# for lol in mypoos:
+#     kehehe = lol
+# gettingthere = kehehe.findAll("li")
+# wearpi = list()
+# for li in gettingthere:
+#     # print(str(li.find("div", {"class": "mb-xs-3"})) + "\n\n")
+#     wearpi.append(li.find("div", {"class": "mb-xs-3"}))
+# wearpic = list()
+# for yeehaw in wearpi:
+#     if yeehaw == None:
+#         wearpic.append(yeehaw)
+#     else:
+#          ee = yeehaw.findAll("img")
+#          for yay in ee:
+#              wearpic.append(yay.get("data-src", None))
+#
+# colio = html.findAll("div", {"class": "card-img-wrap"})
+# prodimges = list()
+# for element in colio:
+#     imges = element.findAll("img")
+#     great = imges[0]
+#     prodimges.append(great.get("data-src", None))
+#
+# alright = html.findAll("div", {"class": "listing-group"})
+# prodlinks = list()
+# for shamalama in alright:
+#     lanks = shamalama.findAll("a", {"class": "display-block"})
+#     hooray = lanks[0]
+#     prodlinks.append("etsy.com" + str(hooray.get("href", None)))
+#
+# keepgoing = html.findAll("p", {"class": "shop2-review-attribution"})
+# namies = list()
+# for serena in keepgoing:
+#     oyea = serena.findAll("a")
+#     okboomer = oyea[0]
+#     namies.append(str(okboomer.string))
+#
+# nextlevel = html.findAll("p", {"class": "shop2-review-attribution"})
+# daties = list()
+# for rofl in nextlevel:
+#     ithinkididit = str(rofl).split("</a> on ")
+#     maybe = ithinkididit[1]
+#     closer = maybe.split("\n")
+#     answer = closer[0]
+#     daties.append(answer)
+#
+# dictlist = list()
+# #Merge
+# coollist = merge(reviews, stars, wearpic, prodimges, prodlinks, namies, daties)
+#
+# for rev,star,wpic,primg,prlink,nams,dates in coollist:
+#     finaldata = dict()
+#     finaldata['Name'] = str(nams)
+#     finaldata['Date'] = str(dates)
+#     finaldata['Stars'] = str(star)
+#     finaldata['Review'] = str(rev)
+#     finaldata['Userpic'] = str(wpic)
+#     finaldata['Product Image'] = str(primg)
+#     finaldata['Product Link'] = str(prlink)
+#     dictlist.append(finaldata)
+#
+# with open('etsy.csv', 'w', newline='') as csvfile:
+#     fieldnames = ['Name', 'Date', 'Stars', 'Review', 'Userpic', 'Product Image', 'Product Link']
+#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+#
+#     writer.writeheader()
+#     for dictionary in dictlist:
+#         writer.writerow(dictionary)

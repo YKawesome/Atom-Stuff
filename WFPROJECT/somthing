@@ -1,0 +1,20 @@
+def split(word):
+    return [char for char in word]
+
+
+def merge(list1, list2):
+    merged_list = [(list1[i], list2[i]) for i in range(0, len(list1))]
+    return merged_list
+
+wo = split(input())
+wt = split(input())
+
+listy = merge(wo,wt)
+final = list()
+for x,y in listy:
+    z = (x+y)
+    final.append(z)
+stra = ""
+for a in final:
+    stra = stra + " [" + a + "]"
+print(stra)
