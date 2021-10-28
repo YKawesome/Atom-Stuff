@@ -1,4 +1,7 @@
 from selenium import webdriver
+# pip install webdriver-manager
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 import math
 from selenium.webdriver.common.by import By
 import time
@@ -13,18 +16,19 @@ import xlwt
 from xlwt import Workbook
 # (row,column)
 
-driver = webdriver.Chrome('./chromedriver')
+s=Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=s)
 
 driver.get("https://blockscout.moonriver.moonbeam.network/address/0x66fB1cD65b97fa40457b90b7d1ca6B92Cb64b32b/transactions")
 
 
 time.sleep(7)
-c = int(driver.find_elements_by_xpath("//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
+c = int(driver.find_elements(By.XPATH, "//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
 pages = math.ceil(c/50)
 clicks = pages-1
 
-a = driver.find_elements_by_class_name("text-truncate")
-b = driver.find_elements_by_class_name("bs-label")
+a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+b = driver.find_elements(By.CLASS_NAME, "bs-label")
 linklist = list()
 counter = 0
 for thing in a:
@@ -32,11 +36,11 @@ for thing in a:
     counter+=1
 
 for click in range(clicks):
-    python_button = driver.find_elements_by_class_name("page-link")[3]
+    python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
     python_button.click()
     time.sleep(4)
-    a = driver.find_elements_by_class_name("text-truncate")
-    b = driver.find_elements_by_class_name("bs-label")
+    a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+    b = driver.find_elements(By.CLASS_NAME, "bs-label")
     counter = 0
     for thing in a:
         linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
