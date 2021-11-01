@@ -1,4 +1,6 @@
 from selenium import webdriver
+from decimal import *
+getcontext().prec = 25
 # pip install webdriver-manager
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -83,12 +85,14 @@ def namer(list):
 
 namer(linklist)
 
+def decimalize
+
 
 wb = Workbook()
 cSheet = wb.add_sheet('Crypto Data')
 
 def writeToExcelFile(number, datep, timep, walletp, typetranp, buycurrencyp, buyunitsp, sellcurrencyp, sellunitsp, feecurrencyp, feeunitsp, urlp):
-    datalist = [datep, timep, walletp, typetranp, buyunitsp, buycurrencyp, sellunitsp, sellcurrencyp, feecurrencyp, feeunitsp, urlp]
+    datalist = [datep, timep, walletp, typetranp, buyunitsp, Decimal(buycurrencyp), sellunitsp, Decimal(sellcurrencyp), feecurrencyp, Decimal(feeunitsp), urlp]
     for index, item in enumerate(datalist):
         cSheet.write(number, index, item)
 writeToExcelFile(0, 'Date', 'Time Stamp', 'Exchange/Wallet Name', 'Type of Transaction (Transfer/Trade/Mining)', 'Buy Units', 'Buy Currency (Use USD or Ticker as per coinmarketcap.com)', 'Sell Units', 'Sell Currency (Use USD or Ticker as per coinmarketcap.com)', 'Fee Currency(if applicable or not netted into buy/sell amount)', 'Fee Units (if applicable or not netted into buy/sell amount)', 'URL')
