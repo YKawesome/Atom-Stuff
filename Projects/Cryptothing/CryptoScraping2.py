@@ -11,7 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 import urllib.request, urllib.parse, urllib.error
-from bs4 import BeautifulSoup
 import ssl
 import xlwt
 from xlwt import Workbook
