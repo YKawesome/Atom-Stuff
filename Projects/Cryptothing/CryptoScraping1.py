@@ -15,8 +15,7 @@ import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup
 import ssl
 import xlwt
-from xlwt import Workbook
-# (row,column)
+from xlwt import Workbooks
 
 s=Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
