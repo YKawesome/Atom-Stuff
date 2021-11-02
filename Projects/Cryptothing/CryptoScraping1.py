@@ -84,8 +84,6 @@ def namer(list):
 
 namer(linklist)
 
-def decimalize
-
 
 wb = Workbook()
 cSheet = wb.add_sheet('Crypto Data')
