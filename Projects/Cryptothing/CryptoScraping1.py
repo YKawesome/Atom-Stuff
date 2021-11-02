@@ -1,6 +1,5 @@
 from selenium import webdriver
 from decimal import *
-getcontext().prec = 25
 # pip install webdriver-manager
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -12,10 +11,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import urllib.request, urllib.parse, urllib.error
+from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import ssl
 import xlwt
-from xlwt import Workbooks
+from xlwt import Workbook
 
 s=Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
@@ -54,42 +54,60 @@ driver.quit()
 
 wallet = '0x828d9957e93FEfe1D501D692eA2186d682eA5E4a'
 
-def namer(list):
-    for index, (url, tratype) in enumerate(list):
+def namer(listaf):
+    for index, (url, tratype) in enumerate(listaf):
         if tratype == "AddLiquidityETH":
-            list[index] = (url, "Stake (LP)e")
+            listaf[index] = (url, "Stake (LP)e")
         elif tratype == "SwapExactTokensForETH":
-            list[index] = (url, "TradeE")
+            listaf[index] = (url, "TradeE")
         elif tratype == "SwapTokensForExactTokens":
-            list[index] = (url, "TradeF")
+            listaf[index] = (url, "TradeF")
         elif tratype == "SwapExactETHForTokens":
-            list[index] = (url, "TradeG")
+            listaf[index] = (url, "TradeG")
         elif tratype == "SwapExactTokensForTokens":
-            list[index] = (url, "TradeH")
+            listaf[index] = (url, "TradeH")
         elif tratype == "AddLiquidity":
-            list[index] = (url, "Stake (LP)o")
+            listaf[index] = (url, "Stake (LP)o")
         elif tratype == "Deposit":
-                ctx = ssl.create_default_context()
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                html = urllib.request.urlopen(url, context=ctx).read()
+                # ctx = ssl.create_default_context()
+                # ctx.check_hostname = False
+                # ctx.verify_mode = ssl.CERT_NONE
+                # html = urllib.request.urlopen(url, context=ctx).read()
+                req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                html = urlopen(req).read()
                 soup = BeautifulSoup(html, "html.parser")
                 result = soup.find_all("h3", {"class" : "address-balance-text"})
                 if len(result) == 3 or len(result)==2:
-                    list[index] = (url, "Mining Reward")
+                    listaf[index] = (url, "Mining Reward")
                 else:
-                    list[index] = (url, "Stake")
+                    listaf[index] = (url, "Stake")
         else:
-            list[index] = (url, tratype)
+            listaf[index] = (url, tratype)
 
 namer(linklist)
 
 
 wb = Workbook()
 cSheet = wb.add_sheet('Crypto Data')
-
+headerdone = False
 def writeToExcelFile(number, datep, timep, walletp, typetranp, buycurrencyp, buyunitsp, sellcurrencyp, sellunitsp, feecurrencyp, feeunitsp, urlp):
-    datalist = [datep, timep, walletp, typetranp, buyunitsp, Decimal(buycurrencyp), sellunitsp, Decimal(sellcurrencyp), feecurrencyp, Decimal(feeunitsp), urlp]
+    # datalist = [datep, timep, walletp, typetranp, buyunitsp, Decimal(buycurrencyp), sellunitsp, Decimal(sellcurrencyp), feecurrencyp, Decimal(feeunitsp), urlp]
+    datalist = [datep, timep, walletp, typetranp, buyunitsp, buycurrencyp, sellunitsp, sellcurrencyp, feecurrencyp, feeunitsp, urlp]
+
+    global headerdone
+    if headerdone:
+        try:
+            getcontext().prec = 25
+            if datalist[5] != None:
+                datalist[5] = Decimal(datalist[5])
+            if datalist[7] != None:
+                datalist[7] = Decimal(datalist[5])
+            if datalist[9] != None:
+                datalist[9] = Decimal(datalist[5])
+        except:
+            print('Transaction Error, Filled with @')
+    else:
+        headerdone = True
     for index, item in enumerate(datalist):
         cSheet.write(number, index, item)
 writeToExcelFile(0, 'Date', 'Time Stamp', 'Exchange/Wallet Name', 'Type of Transaction (Transfer/Trade/Mining)', 'Buy Units', 'Buy Currency (Use USD or Ticker as per coinmarketcap.com)', 'Sell Units', 'Sell Currency (Use USD or Ticker as per coinmarketcap.com)', 'Fee Currency(if applicable or not netted into buy/sell amount)', 'Fee Units (if applicable or not netted into buy/sell amount)', 'URL')
@@ -100,10 +118,13 @@ counteroflps=0
 for index, (url, tratype) in enumerate(linklist):
     if tratype == "Stake":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        #start here
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -126,10 +147,12 @@ for index, (url, tratype) in enumerate(linklist):
         writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
     elif tratype == "TradeE" or tratype == "TradeG" or tratype == "TradeH":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -153,10 +176,12 @@ for index, (url, tratype) in enumerate(linklist):
 
     elif tratype == "TradeF":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -180,10 +205,12 @@ for index, (url, tratype) in enumerate(linklist):
 
     elif tratype == "Stake (LP)e":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -217,10 +244,12 @@ for index, (url, tratype) in enumerate(linklist):
 
     elif tratype == "Stake (LP)o":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -268,10 +297,12 @@ for index, (url, tratype) in enumerate(linklist):
 
     elif tratype == "Mining Reward":
         #start here
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -293,10 +324,12 @@ for index, (url, tratype) in enumerate(linklist):
         writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, None, None, feecurrencyv, feeunitsv, url)
 
     elif tratype == "Withdraw":
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
@@ -326,10 +359,12 @@ for index, (url, tratype) in enumerate(linklist):
         counteroflps+=1
 
     else:
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        html = urllib.request.urlopen(url, context=ctx).read()
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
         soup = BeautifulSoup(html, "html.parser")
         result = soup.find_all("span", {"class" : "mr-4"})
         dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
