@@ -1,5 +1,6 @@
 from selenium import webdriver
 # pip install webdriver-manager
+from decimal import *
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import math
@@ -22,11 +23,10 @@ driver = webdriver.Chrome(service=s)
 driver.get("https://blockscout.moonriver.moonbeam.network/address/0x66fB1cD65b97fa40457b90b7d1ca6B92Cb64b32b/coin-balances")
 
 
-time.sleep(4)
-numberthing = int(driver.find_elements(By.XPATH, "//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
-pages = math.ceil(numberthing/50)
-clicks = pages-1
-
+# numberthing = int(driver.find_elements(By.XPATH, "//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
+# pages = math.ceil(numberthing/50)
+# clicks = pages-1
+time.sleep(5)
 full = driver.find_elements(By.CLASS_NAME, "mt-md-0")
 linklist = list()
 counter = 0
@@ -39,12 +39,11 @@ for index, thing in enumerate(full):
     if (index % 3) == 2:
         linklist[counter].append(thing.find_elements(By.CSS_SELECTOR, "*")[0].text)
         counter+=1
-
-for click in range(clicks):
+while(True):
     python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
     try:
         python_button.click()
-        time.sleep(3)
+        time.sleep(4)
         full = driver.find_elements(By.CLASS_NAME, "mt-md-0")
         for index, thing in enumerate(full):
             if (index % 3) == 0:
@@ -56,7 +55,9 @@ for click in range(clicks):
                 linklist[counter].append(thing.find_elements(By.CSS_SELECTOR, "*")[0].text)
                 counter+=1
     except WebDriverException:
-        print("element is not clickable")
+        print("element is not clickable, moving on")
+        time.sleep(3)
+        break
 driver.quit()
 
 
@@ -72,15 +73,27 @@ def formatter(list):
             list[index][1] = gred.split()[1] + ' ' + gred.split()[2]
     return list
 linklist = formatter(linklist)
-# print(linklist)
 
 wb = Workbook()
 cSheet = wb.add_sheet('Crypto Data')
-
+headerdone=False
 def writeToExcelFile(number, datep, timep, greencurrency, redcurrency, othercur):
     datalist = [datep, timep, greencurrency, redcurrency, othercur]
+    global headerdone
+    if headerdone:
+            getcontext().prec = 25
+            if datalist[2] != None:
+                datalist[2] = Decimal(datalist[2].replace(',',''))
+            if datalist[3] != None:
+                datalist[3] = Decimal(datalist[3].replace(',',''))
+            if datalist[4] != None:
+                datalist[4] = Decimal(datalist[4].replace(',',''))
+    else:
+        headerdone = True
     for index, item in enumerate(datalist):
-        cSheet.write(number, index, item)
+        decimal_style = xlwt.XFStyle()
+        decimal_style.num_format_str = '0.0000000000000000'
+        cSheet.write(number, index, item, decimal_style)
 writeToExcelFile(0, 'Date', 'Time Stamp', 'Green Units', 'Red Units', 'Balance')
 
 linklist.reverse()
