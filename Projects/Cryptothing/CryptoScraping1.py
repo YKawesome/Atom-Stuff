@@ -1,5 +1,6 @@
 from selenium import webdriver
 from decimal import *
+getcontext().prec = 20
 # pip install webdriver-manager
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -17,7 +18,8 @@ from bs4 import BeautifulSoup
 import ssl
 import xlwt
 from xlwt import Workbook
-
+decimal_style = xlwt.XFStyle()
+decimal_style.num_format_str = '0.00000000000000000000'
 
 
 s=Service(ChromeDriverManager().install())
@@ -39,26 +41,26 @@ for thing in a:
     linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
     counter+=1
 
-while(True):
-    try:
-        python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
-        python_button.click()
-        time.sleep(4)
-        a = driver.find_elements(By.CLASS_NAME, "text-truncate")
-        b = driver.find_elements(By.CLASS_NAME, "bs-label")
-        counter = 0
-        for thing in a:
-            linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
-            counter+=1
-    except WebDriverException:
-        break
+# while(True):
+#     try:
+#         python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
+#         python_button.click()
+#         time.sleep(4)
+#         a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+#         b = driver.find_elements(By.CLASS_NAME, "bs-label")
+#         counter = 0
+#         for thing in a:
+#             linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
+#             counter+=1
+#     except WebDriverException:
+#         break
+#
+#
+# driver.quit()
 
+# linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0x14863631af4f8d8bdcf1f828b1c68422ef698d30ef16a39d47ee24b6776cde9b', 'SwapExactETHForTokens')
 
-driver.quit()
-
-# linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0x903ea9450ef322bc357d4ea3fcadaac8de8a3225673dc0e28eee0f05fe319eab', 'SwapExactTokensForTokens')]
-
-wallet = '0x828d9957e93FEfe1D501D692eA2186d682eA5E4a'
+wallet = 'Ledger-Ethereum-Moonriver b32b'
 
 def namer(listaf):
     for index, (url, tratype) in enumerate(listaf):
@@ -83,10 +85,24 @@ def namer(listaf):
                     listaf[index] = (url, "Mining Reward")
                 else:
                     listaf[index] = (url, "Stake")
+        elif tratype[:2] == "0x":
+            listaf[index] = (url, "Fee")
+        elif tratype == "Approve":
+            listaf[index] = (url, "Approval")
         else:
             listaf[index] = (url, tratype)
 
 namer(linklist)
+
+def removeCommas(thing):
+    thingie = thing.split(',')
+    if len(thingie) == 1:
+        thingiee = thingie[0]
+    else:
+        thingiee = ''
+        for part in thingie:
+            thingiee+=part
+    return thingiee
 
 
 wb = Workbook()
@@ -99,19 +115,18 @@ def writeToExcelFile(number, datep, timep, walletp, typetranp, buycurrencyp, buy
     global headerdone
     if headerdone:
         try:
-            getcontext().prec = 25
             if datalist[5] != None:
-                datalist[5] = Decimal(datalist[5])
+                datalist[5] = Decimal(removeCommas(datalist[5]))
             if datalist[7] != None:
-                datalist[7] = Decimal(datalist[7])
+                datalist[7] = Decimal(removeCommas(datalist[7]))
             if datalist[9] != None:
-                datalist[9] = Decimal(datalist[9])
+                datalist[9] = Decimal(removeCommas(datalist[9]))
         except:
             print('moving on')
     else:
         headerdone = True
     for index, item in enumerate(datalist):
-        cSheet.write(number, index, item)
+        cSheet.write(number, index, item, decimal_style)
 writeToExcelFile(0, 'Date', 'Time Stamp', 'Exchange/Wallet Name', 'Type of Transaction (Transfer/Trade/Mining)', 'Buy Units', 'Buy Currency (Use USD or Ticker as per coinmarketcap.com)', 'Sell Units', 'Sell Currency (Use USD or Ticker as per coinmarketcap.com)', 'Fee Currency(if applicable or not netted into buy/sell amount)', 'Fee Units (if applicable or not netted into buy/sell amount)', 'URL')
 
 
@@ -143,7 +158,7 @@ for index, (url, tratype) in enumerate(linklist):
         buyunitsv = buy[1].strip()
         buycurrencyv = buy[0].strip()
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsv = fee[0].strip()
         feecurrencyv = fee[1].strip()
@@ -170,7 +185,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsv = fee[0].strip()
         feecurrencyv = fee[1].strip()
@@ -201,7 +216,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsv = fee[0].strip()
         feecurrencyv = fee[1].strip()
@@ -235,7 +250,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsonev = fee[0].strip()
         feecurrencyonev = fee[1].strip()
@@ -293,7 +308,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsonev = fee[0].strip()
         feecurrencyonev = fee[1].strip()
@@ -327,7 +342,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsv = fee[0].strip()
         feecurrencyv = fee[1].strip()
@@ -356,7 +371,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsonev = fee[0].strip()
         feecurrencyonev = fee[1].strip()
@@ -390,7 +405,7 @@ for index, (url, tratype) in enumerate(linklist):
 
 
         datev = dated[0]
-        timev = dated[1]
+        timev = dated[1].split('.')[0]
         urlv = url
         feeunitsv = fee[0].strip()
         feecurrencyv = fee[1].strip()
