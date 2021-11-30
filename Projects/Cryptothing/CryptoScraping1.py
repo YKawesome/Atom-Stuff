@@ -20,7 +20,10 @@ import xlwt
 from xlwt import Workbook
 decimal_style = xlwt.XFStyle()
 decimal_style.num_format_str = '0.00000000000000000000'
-
+import pandas as pd
+import numpy as np
+FILENAME='moonscandata.csv'
+df=pd.read_csv(FILENAME, encoding="Latin-1", sep=",")
 
 s=Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
@@ -41,24 +44,24 @@ for thing in a:
     linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
     counter+=1
 
-# while(True):
-#     try:
-#         python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
-#         python_button.click()
-#         time.sleep(4)
-#         a = driver.find_elements(By.CLASS_NAME, "text-truncate")
-#         b = driver.find_elements(By.CLASS_NAME, "bs-label")
-#         counter = 0
-#         for thing in a:
-#             linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
-#             counter+=1
-#     except WebDriverException:
-#         break
-#
-#
-# driver.quit()
+while(True):
+    try:
+        python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
+        python_button.click()
+        time.sleep(4)
+        a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+        b = driver.find_elements(By.CLASS_NAME, "bs-label")
+        counter = 0
+        for thing in a:
+            linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
+            counter+=1
+    except WebDriverException:
+        break
 
-# linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0x14863631af4f8d8bdcf1f828b1c68422ef698d30ef16a39d47ee24b6776cde9b', 'SwapExactETHForTokens')
+
+driver.quit()
+
+# linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0x14863631af4f8d8bdcf1f828b1c68422ef698d30ef16a39d47ee24b6776cde9b', 'SwapExactETHForTokens')]
 
 wallet = 'Ledger-Ethereum-Moonriver b32b'
 
@@ -262,10 +265,17 @@ for index, (url, tratype) in enumerate(linklist):
         sellcurrencyonev = sellone[0].strip()
         sellunitstwov = selltwo[1].strip()
         sellcurrencytwov = selltwo[0].strip()
+
+
         if checkforerrors(soup):
             writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
         else:
+            txhas = urlv.split('/')[-1]
+            rowantish = df.loc[df['Txhash'] == txhas]
+            rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
+            slpvalue = rowant['Value'].values[0]
+            buycurrencyv=slpvalue
             writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
 
@@ -319,6 +329,11 @@ for index, (url, tratype) in enumerate(linklist):
             writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
         else:
+            txhas = urlv.split('/')[-1]
+            rowantish = df.loc[df['Txhash'] == txhas]
+            rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
+            slpvalue = rowant['Value'].values[0]
+            buycurrencyv=slpvalue
             writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
 
