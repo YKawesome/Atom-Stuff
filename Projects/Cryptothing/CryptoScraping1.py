@@ -25,43 +25,43 @@ import numpy as np
 FILENAME='moonscandata.csv'
 df=pd.read_csv(FILENAME, encoding="Latin-1", sep=",")
 
-s=Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=s)
+TESTING_STATUS=True
+if TESTING_STATUS:
+    linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0xff3359010e6d0b0c6a3cf64e6cd4f48e98bf2e5d346e506b55b8ad9b67e43b3b', 'Deposit')]
+else:
+    s=Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=s)
 
-driver.get("https://blockscout.moonriver.moonbeam.network/address/0x66fB1cD65b97fa40457b90b7d1ca6B92Cb64b32b/transactions")
-
-
-time.sleep(7)
-# c = int(driver.find_elements(By.XPATH, "//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
-# pages = math.ceil(c/50)
-# clicks = pages
-
-a = driver.find_elements(By.CLASS_NAME, "text-truncate")
-b = driver.find_elements(By.CLASS_NAME, "bs-label")
-linklist = list()
-counter = 0
-for thing in a:
-    linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
-    counter+=1
-
-while(True):
-    try:
-        python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
-        python_button.click()
-        time.sleep(4)
-        a = driver.find_elements(By.CLASS_NAME, "text-truncate")
-        b = driver.find_elements(By.CLASS_NAME, "bs-label")
-        counter = 0
-        for thing in a:
-            linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
-            counter+=1
-    except WebDriverException:
-        break
+    driver.get("https://blockscout.moonriver.moonbeam.network/address/0x66fB1cD65b97fa40457b90b7d1ca6B92Cb64b32b/transactions")
 
 
-driver.quit()
+    time.sleep(7)
+    # c = int(driver.find_elements(By.XPATH, "//*[@data-selector='transaction-count']")[0].get_attribute('innerHTML').strip().split(' ')[0])
+    # pages = math.ceil(c/50)
+    # clicks = pages
 
-# linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0x14863631af4f8d8bdcf1f828b1c68422ef698d30ef16a39d47ee24b6776cde9b', 'SwapExactETHForTokens')]
+    a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+    b = driver.find_elements(By.CLASS_NAME, "bs-label")
+    linklist = list()
+    counter = 0
+    for thing in a:
+        linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
+        counter+=1
+
+    while(True):
+        try:
+            python_button = driver.find_elements(By.CLASS_NAME, "page-link")[3]
+            python_button.click()
+            time.sleep(4)
+            a = driver.find_elements(By.CLASS_NAME, "text-truncate")
+            b = driver.find_elements(By.CLASS_NAME, "bs-label")
+            counter = 0
+            for thing in a:
+                linklist.append((thing.get_attribute('href'),b[counter].get_attribute('innerHTML').strip()))
+                counter+=1
+        except WebDriverException:
+            break
+    driver.quit()
 
 wallet = 'Ledger-Ethereum-Moonriver b32b'
 
@@ -84,7 +84,10 @@ def namer(listaf):
                 html = urlopen(req).read()
                 soup = BeautifulSoup(html, "html.parser")
                 result = soup.find_all("h3", {"class" : "address-balance-text"})
-                if len(result) == 3 or len(result)==2:
+                print(result[0].text.strip().split(' ')[1])
+                if result[0].text.strip().split(' ')[1].strip() == 'SLP':
+                    listaf[index] = (url, "Stake")
+                elif (len(result) == 3 or len(result)==2):
                     listaf[index] = (url, "Mining Reward")
                 else:
                     listaf[index] = (url, "Stake")
@@ -280,6 +283,49 @@ for index, (url, tratype) in enumerate(linklist):
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
 
         counteroflps+=1
+    elif tratype == "DepositAll":
+        #start here
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
+        soup = BeautifulSoup(html, "html.parser")
+        result = soup.find_all("span", {"class" : "mr-4"})
+        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+        result = soup.find_all("dd", {"class" : "col-sm-9"})
+        fee = result[3].text.split(' ')
+        result = soup.find_all("h3", {"class" : "address-balance-text"})
+        sell = result[0].text.strip().split(' ')
+        buyone = result[3].text.strip().split(' ')
+        buytwo = result[4].text.strip().split(' ')
+
+
+
+        datev = dated[0]
+        timev = dated[1].split('.')[0]
+        urlv = url
+        feeunitsonev = fee[0].strip()
+        feecurrencyonev = fee[1].strip()
+        feeunitstwov = 0
+        feecurrencytwov = feecurrencyonev
+        buyoneunitsv = buyone[1].strip()
+        buyonecurrencyv = buyone[0].strip()
+        sellunitsv = sell[1].strip()
+        sellcurrencyv = sell[0].strip()
+        buytwounitsv = buytwo[1].strip()
+        buytwocurrencyv = buytwo[0].strip()
+
+
+        if checkforerrors(soup):
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", None, None, None, None, feecurrencyonev, feeunitsonev, url)
+            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+        else:
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", buyonecurrencyv, buyoneunitsv, None, None, feecurrencyonev, feeunitsonev, url)
+            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", buytwocurrencyv, buytwounitsv, sellcurrencyv, sellunitsv, feecurrencytwov, feeunitstwov, url)
+
+        counteroflps+=1
     elif tratype == "Stake (LP)o":
         #start here
         # ctx = ssl.create_default_context()
@@ -338,6 +384,35 @@ for index, (url, tratype) in enumerate(linklist):
             writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
 
         counteroflps+=1
+    elif tratype == "Transfer":
+        #start here
+        # ctx = ssl.create_default_context()
+        # ctx.check_hostname = False
+        # ctx.verify_mode = ssl.CERT_NONE
+        # html = urllib.request.urlopen(url, context=ctx).read()
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
+        soup = BeautifulSoup(html, "html.parser")
+        result = soup.find_all("span", {"class" : "mr-4"})
+        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+        result = soup.find_all("dd", {"class" : "col-sm-9"})
+        fee = result[3].text.split(' ')
+        result = soup.find_all("h3", {"class" : "address-balance-text"})
+        sell = result[0].text.strip().split(' ')
+
+
+
+        datev = dated[0]
+        timev = dated[1].split('.')[0]
+        urlv = url
+        feeunitsv = fee[0].strip()
+        feecurrencyv = fee[1].strip()
+        sellunitsv = sell[1].strip()
+        sellcurrencyv = sell[0].strip()
+        if checkforerrors(soup):
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
+        else:
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
     elif tratype == "Mining Reward":
         #start here
         # ctx = ssl.create_default_context()
@@ -396,12 +471,20 @@ for index, (url, tratype) in enumerate(linklist):
         buycurrencyonev = buyone[0].strip()
         buyunitstwov = buytwo[1].strip()
         buycurrencytwov = buytwo[0].strip()
+
+        shouldbe1='Withdraw'
+        shouldbe2='Withdraw'
+        if buyunitsonev == 'SOLAR' and buyunitstwov == 'SLP':
+            shouldbe1='Mining Reward'
+            shouldbe2='Unstake'
+
+
         if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Withdraw", None, None, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Withdraw", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , None, None, None, None, feecurrencyonev, feeunitsonev, url)
+            writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , None, None, None, None, feecurrencytwov, feeunitstwov, url)
         else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Withdraw", buycurrencyonev, buyunitsonev, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Withdraw", buycurrencytwov, buyunitstwov, None, None, feecurrencytwov, feeunitstwov, url)
+            writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , buycurrencyonev, buyunitsonev, None, None, feecurrencyonev, feeunitsonev, url)
+            writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , buycurrencytwov, buyunitstwov, None, None, feecurrencytwov, feeunitstwov, url)
 
         counteroflps+=1
     else:
