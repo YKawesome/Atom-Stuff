@@ -25,7 +25,14 @@ import numpy as np
 FILENAME='moonscandata.csv'
 df=pd.read_csv(FILENAME, encoding="Latin-1", sep=",")
 
-TESTING_STATUS=True
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+    'Origin': 'https://blockscout.moonriver.moonbeam.network',
+    'Accept-Language': 'en-US,en;q=0.9'
+
+}
+
+TESTING_STATUS=False
 if TESTING_STATUS:
     linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0xff3359010e6d0b0c6a3cf64e6cd4f48e98bf2e5d346e506b55b8ad9b67e43b3b', 'Deposit')]
 else:
@@ -65,6 +72,8 @@ else:
 
 wallet = 'Ledger-Ethereum-Moonriver b32b'
 
+
+
 def namer(listaf):
     for index, (url, tratype) in enumerate(listaf):
         if tratype == "AddLiquidityETH":
@@ -80,11 +89,10 @@ def namer(listaf):
         elif tratype == "AddLiquidity":
             listaf[index] = (url, "Stake (LP)o")
         elif tratype == "Deposit":
-                req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                req = Request(url, headers=headers)
                 html = urlopen(req).read()
                 soup = BeautifulSoup(html, "html.parser")
                 result = soup.find_all("h3", {"class" : "address-balance-text"})
-                print(result[0].text.strip().split(' ')[1])
                 if result[0].text.strip().split(' ')[1].strip() == 'SLP':
                     listaf[index] = (url, "Stake")
                 elif (len(result) == 3 or len(result)==2):
@@ -147,213 +155,122 @@ def checkforerrors(soupy):
         return False
 
 for index, (url, tratype) in enumerate(linklist):
-    if tratype == "Stake":
-        #start here
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        sell = result[0].text.strip().split(' ')
-        buy = result[1].text.strip().split(' ')
-        sellunitsv = sell[1].strip()
-        sellcurrencyv = sell[0].strip()
-        buyunitsv = buy[1].strip()
-        buycurrencyv = buy[0].strip()
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
-    elif tratype == "TradeE" or tratype == "TradeG" or tratype == "TradeH":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        sell = result[0].text.strip().split(' ')
-        buy = result[1].text.strip().split(' ')
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        sellunitsv = sell[1].strip()
-        sellcurrencyv = sell[0].strip()
-        buyunitsv = buy[1].strip()
-        buycurrencyv = buy[0].strip()
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
-    elif tratype == "TradeF":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        sell = result[2].text.strip().split(' ')
-        buy = result[0].text.strip().split(' ')
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        sellunitsv = sell[1].strip()
-        sellcurrencyv = sell[0].strip()
-        buyunitsv = buy[1].strip()
-        buycurrencyv = buy[0].strip()
-
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
-    elif tratype == "Stake (LP)e":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        selltwo = result[0].text.strip().split(' ')
-        sellone = result[1].text.strip().split(' ')
-        buy = result[3].text.strip().split(' ')
-
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsonev = fee[0].strip()
-        feecurrencyonev = fee[1].strip()
-        feeunitstwov = 0
-        feecurrencytwov = feecurrencyonev
-        buyunitsv = buy[1].strip()
-        buycurrencyv = buy[0].strip()
-        sellunitsonev = sellone[1].strip()
-        sellcurrencyonev = sellone[0].strip()
-        sellunitstwov = selltwo[1].strip()
-        sellcurrencytwov = selltwo[0].strip()
-
-
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
-        else:
-            txhas = urlv.split('/')[-1]
-            rowantish = df.loc[df['Txhash'] == txhas]
-            rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
-            slpvalue = rowant['Value'].values[0]
-            buycurrencyv=slpvalue
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
-
-        counteroflps+=1
-    elif tratype == "DepositAll":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        sell = result[0].text.strip().split(' ')
-        buyone = result[3].text.strip().split(' ')
-        buytwo = result[4].text.strip().split(' ')
-
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsonev = fee[0].strip()
-        feecurrencyonev = fee[1].strip()
-        feeunitstwov = 0
-        feecurrencytwov = feecurrencyonev
-        buyoneunitsv = buyone[1].strip()
-        buyonecurrencyv = buyone[0].strip()
-        sellunitsv = sell[1].strip()
-        sellcurrencyv = sell[0].strip()
-        buytwounitsv = buytwo[1].strip()
-        buytwocurrencyv = buytwo[0].strip()
-
-
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", None, None, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", None, None, None, None, feecurrencytwov, feeunitstwov, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", buyonecurrencyv, buyoneunitsv, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", buytwocurrencyv, buytwounitsv, sellcurrencyv, sellunitsv, feecurrencytwov, feeunitstwov, url)
-
-        counteroflps+=1
-    elif tratype == "Stake (LP)o":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-
-        if checkforerrors(soup):
-            selltwo=None
-            sellone=None
-            buyunitsv = None
-            buycurrencyv = None
-            sellunitsonev = None
-            sellcurrencyonev = None
-            sellunitstwov = None
-            sellcurrencytwov = None
-        else:
+    try:
+        if tratype == "Stake":
+            #start here
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
             result = soup.find_all("h3", {"class" : "address-balance-text"})
-            selltwo = result[1].text.strip().split(' ')
-            sellone = result[0].text.strip().split(' ')
-            buy = result[2].text.strip().split(' ')
+            sell = result[0].text.strip().split(' ')
+            buy = result[1].text.strip().split(' ')
+            sellunitsv = sell[1].strip()
+            sellcurrencyv = sell[0].strip()
+            buyunitsv = buy[1].strip()
+            buycurrencyv = buy[0].strip()
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
+        elif tratype == "TradeE" or tratype == "TradeG" or tratype == "TradeH":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            sell = result[0].text.strip().split(' ')
+            buy = result[1].text.strip().split(' ')
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            sellunitsv = sell[1].strip()
+            sellcurrencyv = sell[0].strip()
+            buyunitsv = buy[1].strip()
+            buycurrencyv = buy[0].strip()
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
+        elif tratype == "TradeF":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            sell = result[2].text.strip().split(' ')
+            buy = result[0].text.strip().split(' ')
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            sellunitsv = sell[1].strip()
+            sellcurrencyv = sell[0].strip()
+            buyunitsv = buy[1].strip()
+            buycurrencyv = buy[0].strip()
+
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Trade", buycurrencyv, buyunitsv, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
+        elif tratype == "Stake (LP)e":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            selltwo = result[0].text.strip().split(' ')
+            sellone = result[1].text.strip().split(' ')
+            buy = result[3].text.strip().split(' ')
+
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsonev = fee[0].strip()
+            feecurrencyonev = fee[1].strip()
+            feeunitstwov = 0
+            feecurrencytwov = feecurrencyonev
             buyunitsv = buy[1].strip()
             buycurrencyv = buy[0].strip()
             sellunitsonev = sellone[1].strip()
@@ -362,154 +279,249 @@ for index, (url, tratype) in enumerate(linklist):
             sellcurrencytwov = selltwo[0].strip()
 
 
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+            else:
+                txhas = urlv.split('/')[-1]
+                rowantish = df.loc[df['Txhash'] == txhas]
+                rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
+                slpvalue = rowant['Value'].values[0]
+                buycurrencyv=slpvalue
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
 
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsonev = fee[0].strip()
-        feecurrencyonev = fee[1].strip()
-        feeunitstwov = 0
-        feecurrencytwov = feecurrencyonev
+            counteroflps+=1
+        elif tratype == "DepositAll":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            sell = result[0].text.strip().split(' ')
+            buyone = result[3].text.strip().split(' ')
+            buytwo = result[4].text.strip().split(' ')
 
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsonev = fee[0].strip()
+            feecurrencyonev = fee[1].strip()
+            feeunitstwov = 0
+            feecurrencytwov = feecurrencyonev
+            buyoneunitsv = buyone[1].strip()
+            buyonecurrencyv = buyone[0].strip()
+            sellunitsv = sell[1].strip()
+            sellcurrencyv = sell[0].strip()
+            buytwounitsv = buytwo[1].strip()
+            buytwocurrencyv = buytwo[0].strip()
+
+
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", None, None, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Mining Reward", buyonecurrencyv, buyoneunitsv, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake", buytwocurrencyv, buytwounitsv, sellcurrencyv, sellunitsv, feecurrencytwov, feeunitstwov, url)
+
+            counteroflps+=1
+        elif tratype == "Stake (LP)o":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+
+            if checkforerrors(soup):
+                selltwo=None
+                sellone=None
+                buyunitsv = None
+                buycurrencyv = None
+                sellunitsonev = None
+                sellcurrencyonev = None
+                sellunitstwov = None
+                sellcurrencytwov = None
+            else:
+                result = soup.find_all("h3", {"class" : "address-balance-text"})
+                selltwo = result[1].text.strip().split(' ')
+                sellone = result[0].text.strip().split(' ')
+                buy = result[2].text.strip().split(' ')
+                buyunitsv = buy[1].strip()
+                buycurrencyv = buy[0].strip()
+                sellunitsonev = sellone[1].strip()
+                sellcurrencyonev = sellone[0].strip()
+                sellunitstwov = selltwo[1].strip()
+                sellcurrencytwov = selltwo[0].strip()
+
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsonev = fee[0].strip()
+            feecurrencyonev = fee[1].strip()
+            feeunitstwov = 0
+            feecurrencytwov = feecurrencyonev
+
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, None, None, feecurrencytwov, feeunitstwov, url)
+            else:
+                txhas = urlv.split('/')[-1]
+                rowantish = df.loc[df['Txhash'] == txhas]
+                rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
+                slpvalue = rowant['Value'].values[0]
+                buycurrencyv=slpvalue
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
+
+            counteroflps+=1
+        elif tratype == "Transfer":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            sell = result[0].text.strip().split(' ')
+
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            sellunitsv = sell[1].strip()
+            sellcurrencyv = sell[0].strip()
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
+        elif tratype == "Mining Reward":
+            #start here
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            buy = result[0].text.strip().split(' ')
+
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            buyunitsv = buy[1].strip()
+            buycurrencyv = buy[0].strip()
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, None, None, feecurrencyv, feeunitsv, url)
+        elif tratype == "Withdraw":
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
+            result = soup.find_all("h3", {"class" : "address-balance-text"})
+            buyone = result[1].text.strip().split(' ')
+            buytwo = result[0].text.strip().split(' ')
+
+
+
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsonev = fee[0].strip()
+            feecurrencyonev = fee[1].strip()
+            feeunitstwov = 0
+            feecurrencytwov = feecurrencyonev
+            buyunitsonev = buyone[1].strip()
+            buycurrencyonev = buyone[0].strip()
+            buyunitstwov = buytwo[1].strip()
+            buycurrencytwov = buytwo[0].strip()
+
+            shouldbe1='Withdraw'
+            shouldbe2='Withdraw'
+            if buyunitsonev == 'SOLAR' and buyunitstwov == 'SLP':
+                shouldbe1='Mining Reward'
+                shouldbe2='Unstake'
+
+
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , None, None, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , None, None, None, None, feecurrencytwov, feeunitstwov, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , buycurrencyonev, buyunitsonev, None, None, feecurrencyonev, feeunitsonev, url)
+                writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , buycurrencytwov, buyunitstwov, None, None, feecurrencytwov, feeunitstwov, url)
+
+            counteroflps+=1
         else:
-            txhas = urlv.split('/')[-1]
-            rowantish = df.loc[df['Txhash'] == txhas]
-            rowant = rowantish.loc[rowantish['TokenSymbol'] == 'SLP']
-            slpvalue = rowant['Value'].values[0]
-            buycurrencyv=slpvalue
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, "Stake (LP)", buycurrencyv, buyunitsv, sellcurrencyonev, sellunitsonev, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet, "Stake (LP)", None, None, sellcurrencytwov, sellunitstwov, feecurrencytwov, feeunitstwov, url)
-
-        counteroflps+=1
-    elif tratype == "Transfer":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        sell = result[0].text.strip().split(' ')
+            # ctx = ssl.create_default_context()
+            # ctx.check_hostname = False
+            # ctx.verify_mode = ssl.CERT_NONE
+            # html = urllib.request.urlopen(url, context=ctx).read()
+            req = Request(url, headers=headers)
+            html = urlopen(req).read()
+            soup = BeautifulSoup(html, "html.parser")
+            result = soup.find_all("span", {"class" : "mr-4"})
+            dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
+            result = soup.find_all("dd", {"class" : "col-sm-9"})
+            fee = result[3].text.split(' ')
 
 
 
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        sellunitsv = sell[1].strip()
-        sellcurrencyv = sell[0].strip()
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, sellcurrencyv, sellunitsv, feecurrencyv, feeunitsv, url)
-    elif tratype == "Mining Reward":
-        #start here
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        buy = result[0].text.strip().split(' ')
+            datev = dated[0]
+            timev = dated[1].split('.')[0]
+            urlv = url
+            feeunitsv = fee[0].strip()
+            feecurrencyv = fee[1].strip()
+            if checkforerrors(soup):
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
+            else:
+                writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
 
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        buyunitsv = buy[1].strip()
-        buycurrencyv = buy[0].strip()
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, buycurrencyv, buyunitsv, None, None, feecurrencyv, feeunitsv, url)
-    elif tratype == "Withdraw":
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-        result = soup.find_all("h3", {"class" : "address-balance-text"})
-        buyone = result[1].text.strip().split(' ')
-        buytwo = result[0].text.strip().split(' ')
-
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsonev = fee[0].strip()
-        feecurrencyonev = fee[1].strip()
-        feeunitstwov = 0
-        feecurrencytwov = feecurrencyonev
-        buyunitsonev = buyone[1].strip()
-        buycurrencyonev = buyone[0].strip()
-        buyunitstwov = buytwo[1].strip()
-        buycurrencytwov = buytwo[0].strip()
-
-        shouldbe1='Withdraw'
-        shouldbe2='Withdraw'
-        if buyunitsonev == 'SOLAR' and buyunitstwov == 'SLP':
-            shouldbe1='Mining Reward'
-            shouldbe2='Unstake'
-
-
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , None, None, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , None, None, None, None, feecurrencytwov, feeunitstwov, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet,shouldbe1 , buycurrencyonev, buyunitsonev, None, None, feecurrencyonev, feeunitsonev, url)
-            writeToExcelFile(index+2+counteroflps, datev, timev, wallet,shouldbe2 , buycurrencytwov, buyunitstwov, None, None, feecurrencytwov, feeunitstwov, url)
-
-        counteroflps+=1
-    else:
-        # ctx = ssl.create_default_context()
-        # ctx.check_hostname = False
-        # ctx.verify_mode = ssl.CERT_NONE
-        # html = urllib.request.urlopen(url, context=ctx).read()
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        html = urlopen(req).read()
-        soup = BeautifulSoup(html, "html.parser")
-        result = soup.find_all("span", {"class" : "mr-4"})
-        dated = result[2].select('span:first-child')[0]['data-from-now'].split(' ')
-        result = soup.find_all("dd", {"class" : "col-sm-9"})
-        fee = result[3].text.split(' ')
-
-
-
-        datev = dated[0]
-        timev = dated[1].split('.')[0]
-        urlv = url
-        feeunitsv = fee[0].strip()
-        feecurrencyv = fee[1].strip()
-        if checkforerrors(soup):
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
-        else:
-            writeToExcelFile(index+1+counteroflps, datev, timev, wallet, tratype, None, None, None, None, feecurrencyv, feeunitsv, url)
-
+    except:
+        writeToExcelFile(index+1+counteroflps, 'ERROR', 'ERROR', wallet, tratype, 'ERROR', 'ERROR', 'ERROR', 'ERROR', 'ERROR', 'ERROR', url)
+        pass
 wb.save('cryptoscrapingone.xlsx')
