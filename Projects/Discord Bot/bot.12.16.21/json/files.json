@@ -1,0 +1,66 @@
+{
+  "amsco": {
+    "8": "https://cdn.discordapp.com/attachments/621213039202402315/802034700776374362/Kami_Export_-_Reading_-_Chapter_8_-_AMSCO_1.pdf",
+    "9": "https://cdn.discordapp.com/attachments/621213039202402315/802033185847640084/Kami_Export_-_Reading_-_Chapter_9_-_AMSCO_1-1-15.pdf",
+    "10": "https://cdn.discordapp.com/attachments/621213039202402315/802033577876520980/Kami_Export_-_Reading_-_Chapter_10_-_AMSCO_1-16-32.pdf",
+    "11": "https://cdn.discordapp.com/attachments/621213039202402315/802031397195612202/Kami_Export_-_Reading_-_Chapter_11_-_AMSCO_1-11-22.pdf",
+    "12": "https://cdn.discordapp.com/attachments/621213039202402315/802030630078119976/Kami_Export_-_Reading_-_Chapter_12_-_AMSCO_1.pdf",
+    "13": "https://cdn.discordapp.com/attachments/621213039202402315/802032186651705344/Kami_Export_-_Reading_-_Chapter_13_-_AMSCO_1-1-9.pdf",
+    "14": "https://cdn.discordapp.com/attachments/621213039202402315/802031695314157578/Kami_Export_-_Reading_-_Chapter_14_-_AMSCO_1-23-33.pdf",
+    "15": "This file hasn't been entered yet.",
+    "16": "https://cdn.discordapp.com/attachments/621213039202402315/802030229957640222/Kami_Export_-_Reading_-_Chapter_16_-_AMSCO_1-1-13.pdf",
+    "17": "https://cdn.discordapp.com/attachments/621213039202402315/802030240884064326/Kami_Export_-_Reading_-_Chapter_17_-_AMSCO_1-14-23.pdf",
+    "18": "https://cdn.discordapp.com/attachments/621213039202402315/802028402273288222/Kami_Export_-_Reading_-_Chapter_18_-_AMSCO.pdf",
+    "19": "https://cdn.discordapp.com/attachments/621213039202402315/802029010544623696/Kami_Export_-_Reading_-_Chapter_19_-_AMSCO-1-13.pdf",
+    "20": "https://cdn.discordapp.com/attachments/621213039202402315/802029019377303572/Kami_Export_-_Reading_-_Chapter_20_-_AMSCO-14-23.pdf",
+    "29":"https://cdn.discordapp.com/attachments/621213039202402315/827370496714735655/Kami_Export_-_Chapter_29.pdf",
+    "30":"https://cdn.discordapp.com/attachments/621213039202402315/827370526040391730/Kami_Export_-_Chapter_30.pdf"
+  },
+
+  "teaip": {
+    "8": "https://cdn.discordapp.com/attachments/621213039202402315/802778140862447617/df6bd594-HS-HSS-EAIP-Part3--Chapter8-RiseofIslam600-1200.pdf",
+    "9": "https://cdn.discordapp.com/attachments/621213039202402315/802778199460282368/6465c370-HS-HSS-EAIP-Part3--Chapter9-ChristianEuropeEmerges600-1200.pdf",
+    "10": "https://cdn.discordapp.com/attachments/621213039202402315/802778242486239232/57bcdf4a-HS-HSS-EAIP-Part3--Chapter10-InnerandEastAsia600-1200.pdf",
+    "11": "https://cdn.discordapp.com/attachments/621213039202402315/802778295975411722/cf6c86f7-HS-HSS-EAIP-Part3--Chapter11-PeoplesandCivilationsoftheAmericas600-1500.pdf",
+    "12": "https://cdn.discordapp.com/attachments/621213039202402315/802778378423369728/a255e826-HS-HSS-EAIP-Part4--Chapter12-MongolEurasiaandItsAftermath1200-1500.pdf",
+    "13": "https://cdn.discordapp.com/attachments/621213039202402315/802778403665084416/18d35952-HS-HSS-EAIP-Part4--Chapter13-TropicalAfricaandAsia1200-1500.pdf",
+    "14": "https://cdn.discordapp.com/attachments/621213039202402315/802778428436381697/809148e5-HS-HSS-EAIP-Part4--Chapter14-LatinWest1200-1500.pdf",
+    "15": "https://cdn.discordapp.com/attachments/621213039202402315/802778476876791818/8b5e40e7-HS-HSS-EAIP-Part4--Chapter15-MaritimeRevolutionto1550_1.pdf",
+    "16": "https://cdn.discordapp.com/attachments/621213039202402315/802778502608322581/6b3260c9-HS-HSS-EAIP-Part5--Chapter16-TransformationsinEurope1500-1750_2.pdf",
+    "17": "https://cdn.discordapp.com/attachments/621213039202402315/802778543330951228/8ba3b5ef-HS-HSS-EAIP-Part5--Chapter17-DiversityofAmericanColonialSocieties1530-1770.pdf",
+    "18": "https://cdn.discordapp.com/attachments/621213039202402315/802778572975767563/5a690701-HS-HSS-EAIP-Part5--Chapter18-AtlanticSystemandAfrica1550-1800.pdf",
+    "19": "https://cdn.discordapp.com/attachments/621213039202402315/802778656178831410/b44476fb-HS-HSS-EAIP-Part5--Chapter19-SouthwestAsiaandtheIndianOcean1500-1750.pdf",
+    "20": "https://cdn.discordapp.com/attachments/621213039202402315/802778712230854696/84ef9673-HS-HSS-EAIP-Part5--Chapter20-NorthernEurasia1500-1800.pdf",
+    "21": "https://cdn.discordapp.com/attachments/621213039202402315/802778747718991872/bf968727-HS-HSS-EAIP-Part6--Chapter21-RevolutionaryChangesintheAtlanticWorld1750-1850_1.pdf",
+    "22": "https://cdn.discordapp.com/attachments/621213039202402315/802778773035417630/da822d4c-HS-HSS-EAIP-Part6--Chapter22-EarlyIndustrialRevolution1760-1851_1.pdf",
+    "23": "https://cdn.discordapp.com/attachments/621213039202402315/802778799917236224/1546d888-HS-HSS-EAIP-Part6--Chapter23-NationBuildingandEconomicTransformationintheAmericas1800-1890.pdf",
+    "24": "https://cdn.discordapp.com/attachments/621213039202402315/802778830372208680/72bb7b0e-HS-HSS-EAIP-Part6--Chapter24-AfricaIndiaandtheNewBritishEmpire1750-1870.pdf",
+    "25": "https://cdn.discordapp.com/attachments/621213039202402315/802778863263547402/ef6359ea-HS-HSS-EAIP-Part6--Chapter25-LandEmpiresintheAgeofImperialism1800-1870.pdf",
+    "26": "https://cdn.discordapp.com/attachments/621213039202402315/802778898281660446/949a76f4-HS-HSS-EAIP-Part7--Chapter26-NewPowerBalance1850-1900.pdf",
+    "27": "https://cdn.discordapp.com/attachments/621213039202402315/802779037839654912/3f7b4a8d-HS-HSS-EAIP-Part7--Chapter27-NewImperialism1869-1914.pdf",
+    "28": "https://cdn.discordapp.com/attachments/621213039202402315/802778912370720788/eab070ff-HS-HSS-EAIP-Part7--Chapter28-CrisisoftheImperialOrder1900-1929.pdf",
+    "29": "https://cdn.discordapp.com/attachments/621213039202402315/802779091358580756/373a3a54-HS-HSS-EAIP-Part7--Chapter29-CollapseoftheOldOrder1929-1949.pdf",
+    "30": "https://cdn.discordapp.com/attachments/621213039202402315/802779117370998814/0d708aae-HS-HSS-EAIP-Part7--Chapter30-StrivingforIndependence-AfricaIndiaandLatinAmerica1900-1949.pdf",
+    "31": "https://cdn.discordapp.com/attachments/621213039202402315/802779154776719380/319b7cc4-HS-HSS-EAIP-Part8--Chapter31-ColdWarandDecolonization1945-1975.pdf",
+    "32": "https://cdn.discordapp.com/attachments/621213039202402315/802779181653688380/49f2f2b0-HS-HSS-EAIP-Part8--Chapter32-CrisisRealignmentandtheDawnofthePost-ColdWarWorld1975-1991.pdf",
+    "33": "https://cdn.discordapp.com/attachments/621213039202402315/802779257431785472/a17c94a6-HS-HSS-EAIP-Part8--Chapter33-GlobalizationattheTurnoftheMillennium.pdf"
+
+  },
+
+  "apush": {
+    "1": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter01.pdf",
+    "2": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter02.pdf",
+    "3": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter03.pdf",
+    "4": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter04.pdf",
+    "5": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter05.pdf",
+    "7": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter07pdf.pdf",
+    "8": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter08pdf.pdf",
+    "9": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter09.pdf",
+    "10": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter10pdf.pdf",
+    "11": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter11.pdf",
+    "12": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter12pdf.pdf",
+    "13": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter13.pdf",
+    "14": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter14.pdf",
+    "15": "https://www.mrginn.com/uploads/8/5/4/6/85468970/chapter15pdf.pdf"
+  }
+}
