@@ -11,6 +11,9 @@ getcontext().prec = 20
 decimal_style = xlwt.XFStyle()
 decimal_style.num_format_str = '0.00000000000000000000'
 
+# month = 'feb'
+#
+# FILENAME=f'portolasolcsv{month}.xlsx'
 FILENAME='portolasolcsv.xlsx'
 df=pd.read_excel(FILENAME,skiprows=[0])
 headerdone = False
@@ -72,7 +75,12 @@ for index, (i, row) in enumerate(df.iterrows()):
     if row[1] == 'Mining Reward':
         writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], row[3], row[4], None, None, "SOL", 0.000005, row[11])
 
-    if row[1] == "Fee":
+    elif row[1] == "Fee":
+        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", row[7], row[11])
+
+
+
+    else:
         writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", row[7], row[11])
 
     # if row[1] == "Trade":
