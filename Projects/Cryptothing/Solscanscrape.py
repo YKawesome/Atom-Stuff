@@ -14,8 +14,9 @@ decimal_style.num_format_str = '0.00000000000000000000'
 # month = 'feb'
 #
 # FILENAME=f'portolasolcsv{month}.xlsx'
-FILENAME='portolasolcsv.xlsx'
-df=pd.read_excel(FILENAME,skiprows=[0])
+FILENAME='portolasolcsvfeb.csv'
+# df=pd.read_csv(FILENAME,sep=',', skiprows=[0])
+df=pd.read_csv(FILENAME,sep=',')
 headerdone = False
 # print('Database\n')
 print(df) #Full Database
@@ -70,18 +71,22 @@ for index, (i, row) in enumerate(df.iterrows()):
     #start writing
     date = row[0].split(' ')[0]
     timestamp = row[0].split(' ')[1]
-
+    # print(type(row[6]))
+    fee = row[6]
+    if pd.isna(fee):
+        fee=None
 
     if row[1] == 'Mining Reward':
-        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], row[3], row[4], None, None, "SOL", 0.000005, row[11])
+        # print(row[3])
+        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], row[2], row[3], None, None, "SOL", 0.000005, row[10])
 
     elif row[1] == "Fee":
-        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", row[7], row[11])
+        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", fee, row[10])
 
 
 
     else:
-        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", row[7], row[11])
+        writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", fee, row[10])
 
     # if row[1] == "Trade":
     #     writeToExcelFile(index+1, date, timestamp, "Ledger-Solana - Ayad", row[1], None, None, None, None, "SOL", row[7], row[9])
