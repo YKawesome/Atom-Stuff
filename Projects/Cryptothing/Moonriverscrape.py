@@ -32,7 +32,7 @@ headers = {
 
 }
 
-TESTING_STATUS=False
+TESTING_STATUS=True
 if TESTING_STATUS:
     linklist= [('https://blockscout.moonriver.moonbeam.network/tx/0xff3359010e6d0b0c6a3cf64e6cd4f48e98bf2e5d346e506b55b8ad9b67e43b3b', 'Deposit')]
 else:
@@ -93,6 +93,7 @@ def namer(listaf):
                 html = urlopen(req).read()
                 soup = BeautifulSoup(html, "html.parser")
                 result = soup.find_all("h3", {"class" : "address-balance-text"})
+                print(soup)
                 if result[0].text.strip().split(' ')[1].strip() == 'SLP':
                     listaf[index] = (url, "Stake")
                 elif (len(result) == 3 or len(result)==2):
