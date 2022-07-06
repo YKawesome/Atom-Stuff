@@ -1,6 +1,6 @@
 import pandas as pd #Pandas Database
 import numpy as np #Numpy Arrays
-
+from datetime import datetime
 import ssl
 import xlwt
 from xlwt import Workbook
@@ -14,7 +14,10 @@ decimal_style.num_format_str = '0.00000000000000000000'
 # month = 'feb'
 #
 # FILENAME=f'portolasolcsv{month}.xlsx'
-FILENAME='portolasolcsvmar.csv'
+currentMonth = datetime.now().month
+months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+cmonth= months[currentMonth-2].lower()
+FILENAME=f'portolasolcsv{cmonth}.csv'
 # df=pd.read_csv(FILENAME,sep=',', skiprows=[0])
 df=pd.read_csv(FILENAME,sep=',')
 headerdone = False
